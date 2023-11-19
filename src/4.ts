@@ -1,10 +1,5 @@
 class Key {
-  private readonly signature: number;
-
-  constructor() {
-    // nanoid было бы лучше
-    this.signature = Math.random() * 1000;
-  }
+  private readonly signature: number = Math.random() * 1000;
 
   getSignature(): number {
     return this.signature;
@@ -20,17 +15,13 @@ class Person {
 }
 
 abstract class House {
-  // Нам же не надо знать извне что дверь открыта?
-  protected door: boolean;
+  protected door: boolean = false;
+  protected tenants: Person[] = [];
 
-  // Можно ли в абстрактных классах делать конструктор, и законно ли это?
-  protected constructor(protected readonly key: Key) {
-    this.door = false;
-  }
+  // webstorm пишет что тут можно использовать protected, все равно абстрактный класс нельзя построить
+  constructor(protected readonly key: Key) {}
 
-  tenants: Person[];
-
-  comeIn(person: Person) {
+  comeIn(person: Person): void {
     if (this.door) {
       this.tenants.push(person);
     }
@@ -40,10 +31,6 @@ abstract class House {
 }
 
 class MyHouse extends House {
-  constructor(key: Key) {
-    super(key);
-  }
-
   openDoor(key: Key): void {
     if (key.getSignature() === this.key.getSignature()) {
       this.door = true;
